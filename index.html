@@ -93,6 +93,24 @@
 
 
 		// Sky graph
+		g.selectAll("circle")
+			.data(data)
+			.join("circle")
+			.attr("cx", function (d,i) {
+				return x(i) + x.bandwidth()/2;
+			})
+			.attr("cy", height/24)
+			.attr("r", function (d) { 
+				if (new Date(d.validTime).getHours() < 13) {
+					return 0
+				} else {
+					return height/36
+				}
+			})
+			.attr("stroke","black")
+			.attr("stroke-opacity","0.2")
+			.attr("fill","yellow");
+
 		g.selectAll(".barthree")
 			.data(data)
 			.join("rect")
