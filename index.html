@@ -1,0 +1,115 @@
+<!doctype html>
+<svg></svg>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>24-Hour Forecast</title>
+  <meta name="description" content="NWS Forecast Data">
+  <meta name="author" content="Joey Picca">
+
+  <!--<link rel="stylesheet" href="css/styles.css?v=1.0">-->
+
+</head>
+
+<style>
+
+</style>
+
+<body>
+  <script src="//d3js.org/d3.v5.min.js"></script>
+  <script>
+
+
+
+  	var svg = d3.select("svg")
+  		.attr("width",window.innerWidth)
+  		.attr("height",window.innerHeight),
+		margin = {
+			top: 20,
+			right: 20,
+			bottom: 20,
+			left: 20
+		},
+		width = +svg.attr("width") - margin.left - margin.right,
+		height = +svg.attr("height") - margin.top - margin.bottom,
+		g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+	var x = d3.scaleBand()
+        	.range([0, width])
+            .padding(0.1);
+
+	//var x = d3.scaleBand()
+	//	.rangeRound([0,width])
+	//	.padding(0.01);
+
+	var y = d3.scaleLinear()
+		.rangeRound([height,0]);
+
+	d3.csv('next24hours.csv').then(function (data) {
+		
+		//Scaled for the number of hours in our graph (24)
+		x.domain([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]);
+
+		y.domain([10,d3.max(data, function(d) {
+			return Number(d.tempF) + 20;
+		})]);
+
+		// Precipitation graph
+		g.selectAll(".barone")
+			.data(data)
+			.join("rect")
+			.classed("barone",true)
+			.attr("x", function (d,i) {
+				return x(i);
+			})
+			.attr("y",height/12)
+			.attr("width", x.bandwidth())
+			.attr("height", height-height/12)
+			.attr("fill","green")
+			.attr("opacity", function(d) {
+				return Number(d.pop)/100
+			});
+
+
+		// Temperature graph
+		g.selectAll(".bartwo")
+			.data(data)
+			.join("rect")
+			.classed("bartwo", true)
+			.attr("x", function (d,i) {
+				return x(i);
+			})
+			.attr("y", function (d) {
+				return y(Number(d.tempF));
+			})
+			.attr("width", x.bandwidth()/1.5)
+			.attr("height", function (d) {
+				return height - y(Number(d.tempF));
+			})
+			.attr("fill","blue")
+			.attr("opacity", "20%");
+
+
+		// Sky graph
+		g.selectAll(".barthree")
+			.data(data)
+			.join("rect")
+			.classed("barthree", true)
+			.attr("x", function (d,i) {
+				return x(i);
+			})
+			.attr("y", 0)
+			.attr("width", x.bandwidth())
+			.attr("height", height/12)
+			.attr("fill","grey")
+			.attr("opacity", function(d) {
+				return Number(d.sky)/100
+			});
+
+	});
+
+  </script>
+</body>
+</html>
