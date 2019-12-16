@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 from pandas.io.json import json_normalize
 import datetime
+import sys
 
 # Enter lat & lon
 # At some point, I'd like to make a simple web app that can pass a 
