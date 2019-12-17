@@ -75,6 +75,16 @@ body {
 	}
 
 	d3.csv('next24hours.csv').then(function (data) {
+
+		// Debug
+
+		/*data.forEach( function (d) {
+			arr = d.validTime.split(/[- :]/);
+
+			date = new Date(arr[0], arr[1]-1, arr[2], arr[3], arr[4], arr[5]);
+
+			console.log(new Date(date - offset*60000))
+		})*/
 		
 		dummyArray = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
 
@@ -87,6 +97,8 @@ body {
 
 		const t = d3.transition()
         	.duration(750);
+
+        const offset = (new Date).getTimezoneOffset();
 
         g.append("text")
         	.attr("x", width/2)
@@ -114,7 +126,11 @@ body {
 			})
 			.attr("y", 0)
 			.text( function (d) {
-				return formatAMPM(new Date(String(d.validTime) + " UTC" ));
+				arr = d.validTime.split(/[- :]/);
+				date = new Date(arr[0], arr[1]-1, arr[2], arr[3], arr[4], arr[5]);
+
+				return formatAMPM(new Date(date - offset*60000));
+				//return formatAMPM(new Date(String(d.validTime) + " UTC" ));
 			});
 
 		//Temp labels
